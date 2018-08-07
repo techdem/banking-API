@@ -5,8 +5,8 @@
  */
 package com.groupd.bankingapi.resources;
 
-//import com.groupd.bankingapi.model.;
-//import com.groupd.bankingapi.services.;
+import com.groupd.bankingapi.model.*;
+import com.groupd.bankingapi.services.*;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -61,7 +61,13 @@ public class Bank {
     @GET
     @Path("/database")
     public Response accessDatabase() {
-        return Response.status(200).entity("Access not authorized").build();
+        
+        if(Banking.accessDatabase() == null) {
+            return Response.status(200).entity("Cannot connect to database!").build();
+        }
+        else {
+            return Response.status(200).entity("Database is connected!").build();
+        }
     }
     
     @POST
