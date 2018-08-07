@@ -14,15 +14,24 @@ import com.groupd.bankingapi.model.*;
  */
 public class Banking {
     
+    private static Bank myBank;
     private static ArrayList<String[][]> dataBase = new ArrayList();
     
     {
-        dataBase.add(new String[][]{{new User("Tudor Chiribes", "Christchurch").getName()},
+        myBank = new Bank("10-20-30","Safest Bank","100 Safe Road");
+        
+        dataBase.add(new String[][]{{new User("Tudor Chiribes","Christchurch","root").getName()},
         {new Account("111111").getAccountNumber()}});
+        
     }
     
     public static ArrayList accessDatabase() {
         
         return dataBase;
+    }
+    
+    public static Bank accessSystem() {
+
+        return myBank;
     }
 }

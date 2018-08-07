@@ -12,12 +12,18 @@ package com.groupd.bankingapi.model;
 
 public class Bank {
     
+    private String sortCode;
     private String bankName;
     private String bankAddress;
     
-    public Bank(String name, String address) {
+    public Bank(String code, String name, String address) {
+        this.sortCode = code;
         this.bankName = name;
         this.bankAddress = address;
+    }
+    
+    public String getSortCode() {
+        return sortCode;
     }
     
     public String getName() {

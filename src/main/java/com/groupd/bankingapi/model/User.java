@@ -14,10 +14,12 @@ public class User {
     
     private String userName;
     private String userAddress;
+    private String password;
     
-    public User(String name, String address) {
+    public User(String name, String address, String pass) {
         this.userName = name;
         this.userAddress = address;
+        this.password = pass;
     }
     
     public String getName() {

@@ -27,6 +27,8 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class Bank {
     
+    Banking myBanking = new Banking();
+    
     @GET
     @Path("/test")
     public Response testServer() {
@@ -55,14 +57,16 @@ public class Bank {
     @GET
     @Path("/system")
     public Response accessSystem() {
-        return Response.status(200).entity("Access not authorized").build();
+        
+        return Response.status(200).entity("Bank " + myBanking.accessSystem().getName()
+                + " is operational").build();
     }
     
     @GET
     @Path("/database")
     public Response accessDatabase() {
         
-        if(Banking.accessDatabase() == null) {
+        if(myBanking.accessDatabase() == null) {
             return Response.status(200).entity("Cannot connect to database!").build();
         }
         else {
