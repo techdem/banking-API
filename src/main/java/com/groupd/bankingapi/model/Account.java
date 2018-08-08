@@ -7,7 +7,7 @@ package com.groupd.bankingapi.model;
 
 /**
  *
- * @author tudor
+ * @author Tudor Chiribes, Cormac O'Donovan, Alex Andrews
  */
 
 public class Account {
@@ -26,6 +26,7 @@ public class Account {
     public void setBalance(int newBalance) {
         this.balance = newBalance;
     }
+    
     public int getBalance() {
         return balance;
     }

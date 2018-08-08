@@ -14,6 +14,7 @@ import com.groupd.bankingapi.model.*;
  */
 public class Banking {
     
+    // Declare new bank, database and environment variables
     private static Bank myBank;
     private static ArrayList<ArrayList<Object>> dataBase = new ArrayList<ArrayList<Object>>();
     private static boolean adminLoggedIn;
@@ -21,6 +22,7 @@ public class Banking {
     private static int loggedInID;
     private static Account selectedAccount;
     
+    // Use static initialization block to populate database
     static {
         myBank = new Bank("10-20-30","Safest Bank","100 Safe Road");
         
@@ -37,16 +39,19 @@ public class Banking {
         dataBase.get(1).add(new Account("testACCnumber2"));
     }
     
+    // Return the database
     public static ArrayList<ArrayList<Object>> accessDatabase() {
         
         return dataBase;
     }
     
+    // Return bank details
     public static Bank accessSystem() {
 
         return myBank;
     }
     
+    // Create new user
     public void newUser(String newUser) {
         
         int id = dataBase.size()+1;
@@ -65,6 +70,7 @@ public class Banking {
         dataBase.get(dataBase.size()-1).add(new User(id,name,address,pass));
     }
     
+    // Login by checking for username and password
     public boolean login(String login) {
         
         String[] input = login.split(",");
@@ -96,16 +102,19 @@ public class Banking {
         return false;
     }
     
+    // Return current user state
     public boolean userLoggedIn() {
         
         return userLoggedIn;
     }
     
+    // Return current user state
     public boolean adminLoggedIn() {
         
         return adminLoggedIn;
     }
     
+    // Logout any user or admin and reset state
     public void logout() {
         
         adminLoggedIn = false;
@@ -113,6 +122,7 @@ public class Banking {
         selectedAccount = null;
     }
     
+    // Return list of account numbers that belong to the user
     public String displayAccounts() {
         
         String accounts = "";
@@ -131,6 +141,7 @@ public class Banking {
         return accounts;
     }
     
+    // Create new account for the logged in user
     public void newAccount(String newAccount) {
         
         for(ArrayList<Object> databaseRows : dataBase) {
@@ -142,6 +153,7 @@ public class Banking {
         }
     }
     
+    // Select an account that belongs to the logged in user
     public boolean selectAccount(String accountNo) {
         
         for(ArrayList<Object> databaseRows : dataBase) {
@@ -161,6 +173,7 @@ public class Banking {
         return false;
     }
     
+    // Check if an account has been selected
     public boolean accountSelected() {
         
         if(selectedAccount == null) {
@@ -173,16 +186,19 @@ public class Banking {
         }
     }
     
+    // Return the number of the selected account
     public String selectedAccount() {
         
         return selectedAccount.getAccountNumber();
     }
     
+    // Return the balance of the currently selected account
     public int getAccountBalance() {
         
         return selectedAccount.getBalance();
     }
     
+    // Lodge amount to currently selected account
     public boolean lodgeAmount(String input) {
         
         int lodgeAmount = 0;
@@ -203,6 +219,7 @@ public class Banking {
         return false;
     }
     
+    // Withdraw amount from the currently selected account
     public boolean withdrawAmount(String input) {
         
         int withdrawAmount = 0;
@@ -223,6 +240,7 @@ public class Banking {
         return false;
     }
     
+    // Transfer amount from currently selected account to specified account
     public boolean transferAmount(String transfer) {
         
         int transferAmount = 0;

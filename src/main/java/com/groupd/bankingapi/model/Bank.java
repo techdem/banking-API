@@ -7,7 +7,7 @@ package com.groupd.bankingapi.model;
 
 /**
  *
- * @author tudor
+ * @author Tudor Chiribes, Cormac O'Donovan, Alex Andrews
  */
 
 public class Bank {

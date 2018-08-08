@@ -21,7 +21,7 @@ import java.util.*;
 
 /**
  *
- * @author Tudor Chiribes
+ * @author Tudor Chiribes, Cormac O'Donovan, Alex Andrews
  */
 
 @Path("/")
@@ -58,6 +58,7 @@ public class Bank {
     @Path("/system")
     public Response accessSystem() {
         
+        // Check for admin login
         if(!myBanking.adminLoggedIn()) {
             
             return Response.status(200).entity("Access denied!").build();
@@ -76,6 +77,7 @@ public class Bank {
     @Path("/database")
     public Response accessDatabase() {
         
+        // Check for admin login
         if(!myBanking.adminLoggedIn()) {
             
             return Response.status(200).entity("Access denied!").build();
@@ -103,6 +105,7 @@ public class Bank {
         }
     }
     
+    // Path for new user
     @POST
     @Path("/user/signup")
     public Response signupPage(String newUser) {
@@ -111,23 +114,32 @@ public class Bank {
         return Response.status(200).entity("Registration submitted").build();
     }
     
+    // Path for existing user login
     @POST
     @Path("/user/login")
     public Response loginPage(String login) {
         
+        // Check if successful
         if(myBanking.login(login)) {
+            
+            // Admin login
             if(myBanking.adminLoggedIn()) {
 
                 return Response.status(200).entity("Welcome Admin!").build();
             }
+            
+            // User Login
             else if(myBanking.userLoggedIn()) {
                 
                 return Response.status(200).entity("Logged in successfully!").build();
             }
         }
+        
+        // Login condition not met
         return Response.status(200).entity("Login failed!").build();
     }
     
+    // Path for logout
     @GET
     @Path("/user/logout")
     public Response logoutPage() {
@@ -136,39 +148,48 @@ public class Bank {
         return Response.status(200).entity("Logout successful!").build();
     }
     
+    // Path for user accounts
     @GET
     @Path("/user")
     public Response displayUser() {
         
+        // User must be logged in
         if(!myBanking.userLoggedIn()) {
             return Response.status(200).entity("Please login first!").build();
         }
         
+        // Display list of accounts in output
         return Response.status(200).entity("Displaying user accounts: " +
                 myBanking.displayAccounts()).build();
     }
     
+    // Path to create new account
     @POST
     @Path("/user/account/new")
     public String createAccount(String input) {
         
+        // User must be logged in
         if(!myBanking.userLoggedIn()) {
             return "Please login first!";
         }
         
+        // Parse JSON input and remove extra characters
         String newAccount = input.substring(1, input.length()-1);
         myBanking.newAccount(newAccount);
 	return "Submitted new account: " + newAccount;
     }
     
+    // Path to select account
     @GET
     @Path("/user/account/select")
     public Response selectAccount(@QueryParam("account") String accountNo) {
         
+        // User must be logged in
         if(!myBanking.userLoggedIn()) {
             return Response.status(200).entity("Please login first!").build();
         }
         
+        // Attempt to select account
         if(myBanking.selectAccount(accountNo)) {
             return Response.status(200).entity("Selecting account: " + accountNo).build();
         }
@@ -177,14 +198,17 @@ public class Bank {
         }
     }
     
+    // Path to display account balance
     @GET
     @Path("/user/account/balance")
     public Response getBalance() {
         
+        // User must be logged in
         if(!myBanking.userLoggedIn()) {
             return Response.status(200).entity("Please login first!").build();
         }
         
+        // Account must be selected
         if(!myBanking.accountSelected()) {
             return Response.status(200).entity("Please select an account first").build();
         }
@@ -194,45 +218,53 @@ public class Bank {
         }
     }
     
+    // Path to lodge money into account
     @POST
     @Path("/user/account/lodge")
     public String lodgeAmount(String input) {
         
+        // User must be logged in
         if(!myBanking.userLoggedIn()) {
             return "Please login first!";
         }
+        
+        // Account must be selected
         if(!myBanking.accountSelected()) {
             return "Please select an account first";
         }
         else {
-            
             if(myBanking.lodgeAmount(input)) {
                 
                 return "Amount lodged!";
             }
         }
         
+        // Input could not be parsed
         return "Invalid input!";
     }
     
+    // Path for transfer between accounts
     @POST
     @Path("/user/account/transfer")
     public String transferAmount(String input) {
         
+        // User must be logged in
         if(!myBanking.userLoggedIn()) {
             return "Please login first!";
         }
+        
+        // Account must be selected
         if(!myBanking.accountSelected()) {
             return "Please select an account first";
         }
         else {
-            
             if(myBanking.transferAmount(input)) {
                 
                 return "Amount transfered!";
             }
         }
         
+        // Input could not be parsed
         return "Invalid input!";
     }
     
@@ -240,20 +272,23 @@ public class Bank {
     @Path("/user/account/withdraw")
     public String withdrawAmount(String input) {
         
+        // User must be logged in
         if(!myBanking.userLoggedIn()) {
             return "Please login first!";
         }
+        
+        // Account must be selected
         if(!myBanking.accountSelected()) {
             return "Please select an account first";
         }
         else {
-            
             if(myBanking.withdrawAmount(input)) {
                 
                 return "Amount withdrew!";
             }
         }
         
+        // Input could not be parsed
         return "Invalid input!";
     }
 }
