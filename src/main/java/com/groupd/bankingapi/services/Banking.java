@@ -16,12 +16,17 @@ public class Banking {
     
     private static Bank myBank;
     private static ArrayList<Object[][]> dataBase = new ArrayList();
+    private static boolean adminLoggedIn;
+    private static boolean userLoggedIn;
     
     static {
         myBank = new Bank("10-20-30","Safest Bank","100 Safe Road");
         
         dataBase.add(new Object[][]{{new User(1,"Tudor Chiribes","Christchurch","root"),
         new Account("111111")}});
+        
+        dataBase.add(new Object[][]{{new User(1,"Test User","Test City","test password"),
+        new Account("test account")}});
     }
     
     public static ArrayList<Object[][]> accessDatabase() {
@@ -49,10 +54,42 @@ public class Banking {
         System.out.println("Third parameter: " + pass);
         
         dataBase.add(new Object[][]{{new User(id,name,address,pass)}});
+    }
+    
+    public boolean login(String login) {
+        
+        String[] input = login.split(",");
+        
+        String user = input[0].substring(1).toLowerCase();
+        String password = input[1].substring(0, input[1].length() - 1);
+        
+        adminLoggedIn = false;
+        userLoggedIn = false;
         
         for(Object[][] o : dataBase) {
             
-            System.out.println(((User)o[0][0]).getID());
+            if(((User)o[0][0]).getName().toLowerCase().equals(user) &&
+                    ((User)o[0][0]).getPassword().equals(password)) {
+                
+                if(((User)o[0][0]).getName().toLowerCase().equals("tudor chiribes")) {
+                    
+                    adminLoggedIn = true;
+                }
+                userLoggedIn = true;
+                return true;
+            }
         }
+        
+        return false;
+    }
+    
+    public boolean userLoggedIn() {
+        
+        return userLoggedIn;
+    }
+    
+    public boolean adminLoggedIn() {
+        
+        return adminLoggedIn;
     }
 }

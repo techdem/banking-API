@@ -29,6 +29,9 @@ public class Bank {
     
     Banking myBanking = new Banking();
     
+    boolean adminLoggedIn;
+    boolean userLoggedIn;
+    
     // Path for testing that the server is working as expected
     @GET
     @Path("/test")
@@ -63,6 +66,11 @@ public class Bank {
     @Path("/system")
     public Response accessSystem() {
         
+        if(!myBanking.adminLoggedIn()) {
+            
+            return Response.status(200).entity("Access denied!").build();
+        }
+        
         System.out.println("Name: " + myBanking.accessSystem().getName() +
                 "\nAddress: " + myBanking.accessSystem().getAddress() +
                 "\nSort Code: " + myBanking.accessSystem().getSortCode());
@@ -76,6 +84,10 @@ public class Bank {
     @Path("/database")
     public Response accessDatabase() {
         
+        if(!myBanking.adminLoggedIn()) {
+            
+            return Response.status(200).entity("Access denied!").build();
+        }
         // Check that database exists
         if(myBanking.accessDatabase() == null) {
             return Response.status(200).entity("Cannot connect to database!").build();
@@ -108,8 +120,19 @@ public class Bank {
     
     @POST
     @Path("/user/login")
-    public Response loginPage() {
-        return Response.status(200).entity("Welcome to Login Page").build();
+    public Response loginPage(String login) {
+        
+        if(myBanking.login(login)) {
+            if(myBanking.adminLoggedIn()) {
+
+                return Response.status(200).entity("Welcome Admin!").build();
+            }
+            else if(myBanking.userLoggedIn()) {
+                
+                return Response.status(200).entity("Logged in successfully!").build();
+            }
+        }
+        return Response.status(200).entity("Login failed!").build();
     }
     
     @GET

@@ -15,13 +15,13 @@ public class User {
     private int id;
     private String userName;
     private String userAddress;
-    private String password;
+    private String userPassword;
     
     public User(int id, String name, String address, String pass) {
         this.id = id;
         this.userName = name;
         this.userAddress = address;
-        this.password = pass;
+        this.userPassword = pass;
     }
     
     public int getID() {
@@ -35,5 +35,9 @@ public class User {
     
     public String getAddress() {
         return userAddress;
+    }
+    
+    public String getPassword() {
+        return userPassword;
     }
 }
