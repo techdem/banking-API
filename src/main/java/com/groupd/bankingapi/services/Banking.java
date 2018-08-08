@@ -19,6 +19,7 @@ public class Banking {
     private static boolean adminLoggedIn;
     private static boolean userLoggedIn;
     private static int loggedInID;
+    private static String selectedAccount;
     
     static {
         myBank = new Bank("10-20-30","Safest Bank","100 Safe Road");
@@ -32,8 +33,8 @@ public class Banking {
         dataBase.add(new ArrayList<Object>());
         
         dataBase.get(1).add(new User(2,"Test User","Test City","test password"));
-        dataBase.get(1).add(new Account("test account 1"));
-        dataBase.get(1).add(new Account("test account 2"));
+        dataBase.get(1).add(new Account("testACCnumber"));
+        dataBase.get(1).add(new Account("testACCnumber2"));
     }
     
     public static ArrayList<ArrayList<Object>> accessDatabase() {
@@ -73,6 +74,7 @@ public class Banking {
         
         adminLoggedIn = false;
         userLoggedIn = false;
+        selectedAccount = "";
         
         for(ArrayList<Object> databaseRows : dataBase) {
                             
@@ -131,5 +133,24 @@ public class Banking {
                 dataBase.get(loggedInID-1).add(new Account(newAccount));
             }
         }
+    }
+    
+    public boolean selectAccount(String accountNo) {
+        
+        for(ArrayList<Object> databaseRows : dataBase) {
+                            
+            if(((User)databaseRows.get(0)).getID() == loggedInID) {
+                
+                for(int i = 1; i < databaseRows.size(); i++) {
+
+                    if(((Account)databaseRows.get(i)).getAccountNumber().equals(accountNo)) {
+                        
+                        selectedAccount = accountNo;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

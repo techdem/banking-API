@@ -163,10 +163,20 @@ public class Bank {
 	return "Submitted new account: " + newAccount;
     }
     
-    @POST
+    @GET
     @Path("/user/account/select")
-    public String selectAccount(String input) {
-	return "Selecting account: " + input;
+    public Response selectAccount(@QueryParam("account") String accountNo) {
+        
+        if(!myBanking.userLoggedIn()) {
+            return Response.status(200).entity("Please login first!").build();
+        }
+        
+        if(myBanking.selectAccount(accountNo)) {
+            return Response.status(200).entity("Selecting account: " + accountNo).build();
+        }
+        else {
+            return Response.status(200).entity("Account not found!").build();
+        }
     }
     
     @GET
@@ -189,8 +199,8 @@ public class Bank {
     }
     
     @POST
-    @Path("/user/account/withdraw/{param}")
-    public String withdrawAmount(@PathParam("param") String input) {
+    @Path("/user/account/withdraw")
+    public String withdrawAmount(@QueryParam("amount") String input) {
 	return "Withdrawing " + input;
     }
 }
