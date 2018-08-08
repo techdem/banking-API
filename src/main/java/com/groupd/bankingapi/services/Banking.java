@@ -15,21 +15,22 @@ import com.groupd.bankingapi.model.*;
 public class Banking {
     
     private static Bank myBank;
-    private static ArrayList<Object[][]> dataBase = new ArrayList();
+    private static ArrayList<Object[]> dataBase = new ArrayList();
     private static boolean adminLoggedIn;
     private static boolean userLoggedIn;
+    private static int loggedInID;
     
     static {
         myBank = new Bank("10-20-30","Safest Bank","100 Safe Road");
         
-        dataBase.add(new Object[][]{{new User(1,"Tudor Chiribes","Christchurch","root"),
-        new Account("111111")}});
+        dataBase.add(new Object[]{new User(1,"Tudor Chiribes","Christchurch","root"),
+        new Account("111111"), new Account("222222")});
         
-        dataBase.add(new Object[][]{{new User(1,"Test User","Test City","test password"),
-        new Account("test account")}});
+        dataBase.add(new Object[]{new User(2,"Test User","Test City","test password"),
+        new Account("test account")});
     }
     
-    public static ArrayList<Object[][]> accessDatabase() {
+    public static ArrayList<Object[]> accessDatabase() {
         
         return dataBase;
     }
@@ -53,7 +54,7 @@ public class Banking {
         System.out.println("Second parameter: " + address);
         System.out.println("Third parameter: " + pass);
         
-        dataBase.add(new Object[][]{{new User(id,name,address,pass)}});
+        dataBase.add(new Object[]{new User(id,name,address,pass)});
     }
     
     public boolean login(String login) {
@@ -66,16 +67,18 @@ public class Banking {
         adminLoggedIn = false;
         userLoggedIn = false;
         
-        for(Object[][] o : dataBase) {
+        for(Object[] o : dataBase) {
             
-            if(((User)o[0][0]).getName().toLowerCase().equals(user) &&
-                    ((User)o[0][0]).getPassword().equals(password)) {
+            if(((User)o[0]).getName().toLowerCase().equals(user) &&
+                    ((User)o[0]).getPassword().equals(password)) {
                 
-                if(((User)o[0][0]).getName().toLowerCase().equals("tudor chiribes")) {
+                if(((User)o[0]).getName().toLowerCase().equals("tudor chiribes")) {
                     
                     adminLoggedIn = true;
+                    loggedInID = 1;
                 }
                 userLoggedIn = true;
+                loggedInID = ((User)o[0]).getID();
                 return true;
             }
         }
@@ -91,5 +94,23 @@ public class Banking {
     public boolean adminLoggedIn() {
         
         return adminLoggedIn;
+    }
+    
+    public String displayAccounts() {
+        
+        String accounts = "";
+        
+        for(Object[] o : dataBase) {
+            
+            if(((User)o[0]).getID() == loggedInID) {
+                
+                for(int i = 1; i < o.length; i++) {
+                    
+                    accounts += ((Account)o[i]).getAccountNumber() + " ";
+                }
+            }
+        }
+        
+        return accounts;
     }
 }

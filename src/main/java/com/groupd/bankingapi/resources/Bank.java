@@ -95,14 +95,14 @@ public class Bank {
         else {
             
             // Iterate over the database and print user IDs and associated accounts
-            for(Object[][] usr : myBanking.accessDatabase()) {
+            for(Object[] usr : myBanking.accessDatabase()) {
                 
-                System.out.println("USER: " + ((User)usr[0][0]).getID());
-                System.out.println("\tName: " + ((User)usr[0][0]).getName());
+                System.out.println("USER: " + ((User)usr[0]).getID());
+                System.out.println("\tName: " + ((User)usr[0]).getName());
                 
-                for(int i = 1; i < usr[0].length; i++) {
+                for(int i = 1; i < usr.length; i++) {
                     
-                    System.out.println("\tAccounts: " + ((Account)usr[0][i]).getAccountNumber());
+                    System.out.println("\tAccounts: " + ((Account)usr[i]).getAccountNumber());
                 }
             }
             
@@ -138,7 +138,13 @@ public class Bank {
     @GET
     @Path("/user")
     public Response displayUser() {
-        return Response.status(200).entity("Displaying Accounts").build();
+        
+        if(!myBanking.userLoggedIn()) {
+            return Response.status(200).entity("Please login first!").build();
+        }
+        
+        return Response.status(200).entity("Displaying Accounts: " +
+                myBanking.displayAccounts()).build();
     }
     
     @POST
