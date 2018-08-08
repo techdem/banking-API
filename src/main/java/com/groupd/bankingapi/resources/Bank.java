@@ -17,6 +17,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.util.*;
+
 /**
  *
  * @author Tudor Chiribes
@@ -88,6 +90,7 @@ public class Bank {
             
             return Response.status(200).entity("Access denied!").build();
         }
+        
         // Check that database exists
         if(myBanking.accessDatabase() == null) {
             return Response.status(200).entity("Cannot connect to database!").build();
@@ -95,14 +98,14 @@ public class Bank {
         else {
             
             // Iterate over the database and print user IDs and associated accounts
-            for(Object[] usr : myBanking.accessDatabase()) {
+            for(ArrayList<Object> databaseRows : myBanking.accessDatabase()) {
                 
-                System.out.println("USER: " + ((User)usr[0]).getID());
-                System.out.println("\tName: " + ((User)usr[0]).getName());
-                
-                for(int i = 1; i < usr.length; i++) {
-                    
-                    System.out.println("\tAccounts: " + ((Account)usr[i]).getAccountNumber());
+                System.out.println("USER: " + ((User)databaseRows.get(0)).getID());
+                System.out.println("\tName: " + ((User)databaseRows.get(0)).getName());
+
+                for(int i = 1; i < databaseRows.size(); i++) {
+
+                    System.out.println("\tAccounts: " + ((Account)databaseRows.get(i)).getAccountNumber());
                 }
             }
             
@@ -115,7 +118,7 @@ public class Bank {
     public Response signupPage(String newUser) {
         
         myBanking.newUser(newUser);
-        return Response.status(200).entity("You have registered successfully").build();
+        return Response.status(200).entity("Registration submitted").build();
     }
     
     @POST
@@ -143,14 +146,21 @@ public class Bank {
             return Response.status(200).entity("Please login first!").build();
         }
         
-        return Response.status(200).entity("Displaying Accounts: " +
+        return Response.status(200).entity("Displaying user accounts: " +
                 myBanking.displayAccounts()).build();
     }
     
     @POST
     @Path("/user/account/new")
     public String createAccount(String input) {
-	return "Creating new account: " + input;
+        
+        if(!myBanking.userLoggedIn()) {
+            return "Please login first!";
+        }
+        
+        String newAccount = input.substring(1, input.length()-1);
+        myBanking.newAccount(newAccount);
+	return "Submitted new account: " + newAccount;
     }
     
     @POST

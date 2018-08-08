@@ -5,7 +5,7 @@
  */
 package com.groupd.bankingapi.services;
 
-import java.util.ArrayList;
+import java.util.*;
 import com.groupd.bankingapi.model.*;
 
 /**
@@ -15,7 +15,7 @@ import com.groupd.bankingapi.model.*;
 public class Banking {
     
     private static Bank myBank;
-    private static ArrayList<Object[]> dataBase = new ArrayList();
+    private static ArrayList<ArrayList<Object>> dataBase = new ArrayList<ArrayList<Object>>();
     private static boolean adminLoggedIn;
     private static boolean userLoggedIn;
     private static int loggedInID;
@@ -23,14 +23,20 @@ public class Banking {
     static {
         myBank = new Bank("10-20-30","Safest Bank","100 Safe Road");
         
-        dataBase.add(new Object[]{new User(1,"Tudor Chiribes","Christchurch","root"),
-        new Account("111111"), new Account("222222")});
+        dataBase.add(new ArrayList<Object>());
         
-        dataBase.add(new Object[]{new User(2,"Test User","Test City","test password"),
-        new Account("test account")});
+        dataBase.get(0).add(new User(1,"Tudor Chiribes","Christchurch","root"));
+        dataBase.get(0).add(new Account("111111"));
+        dataBase.get(0).add(new Account("222222"));
+        
+        dataBase.add(new ArrayList<Object>());
+        
+        dataBase.get(1).add(new User(2,"Test User","Test City","test password"));
+        dataBase.get(1).add(new Account("test account 1"));
+        dataBase.get(1).add(new Account("test account 2"));
     }
     
-    public static ArrayList<Object[]> accessDatabase() {
+    public static ArrayList<ArrayList<Object>> accessDatabase() {
         
         return dataBase;
     }
@@ -54,7 +60,8 @@ public class Banking {
         System.out.println("Second parameter: " + address);
         System.out.println("Third parameter: " + pass);
         
-        dataBase.add(new Object[]{new User(id,name,address,pass)});
+        dataBase.add(new ArrayList<Object>());
+        dataBase.get(dataBase.size()-1).add(new User(id,name,address,pass));
     }
     
     public boolean login(String login) {
@@ -67,18 +74,19 @@ public class Banking {
         adminLoggedIn = false;
         userLoggedIn = false;
         
-        for(Object[] o : dataBase) {
-            
-            if(((User)o[0]).getName().toLowerCase().equals(user) &&
-                    ((User)o[0]).getPassword().equals(password)) {
-                
-                if(((User)o[0]).getName().toLowerCase().equals("tudor chiribes")) {
-                    
-                    adminLoggedIn = true;
-                    loggedInID = 1;
-                }
+        for(ArrayList<Object> databaseRows : dataBase) {
+                            
+            if(((User)databaseRows.get(0)).getName().toLowerCase().equals(user) &&
+                    ((User)databaseRows.get(0)).getPassword().equals(password)) {
+
+                if(((User)databaseRows.get(0)).getName().toLowerCase().equals("tudor chiribes")) {
+
+                        adminLoggedIn = true;
+                        loggedInID = 1;
+                    }
+
                 userLoggedIn = true;
-                loggedInID = ((User)o[0]).getID();
+                loggedInID = ((User)databaseRows.get(0)).getID();
                 return true;
             }
         }
@@ -100,17 +108,28 @@ public class Banking {
         
         String accounts = "";
         
-        for(Object[] o : dataBase) {
-            
-            if(((User)o[0]).getID() == loggedInID) {
-                
-                for(int i = 1; i < o.length; i++) {
-                    
-                    accounts += ((Account)o[i]).getAccountNumber() + " ";
+        for(ArrayList<Object> databaseRows : dataBase) {
+                            
+            if(((User)databaseRows.get(0)).getID() == loggedInID) {
+
+                for(int i = 1; i < databaseRows.size(); i++) {
+
+                    accounts += ((Account)databaseRows.get(i)).getAccountNumber() + ",";
                 }
             }
         }
         
         return accounts;
+    }
+    
+    public void newAccount(String newAccount) {
+        
+        for(ArrayList<Object> databaseRows : dataBase) {
+                            
+            if(((User)databaseRows.get(0)).getID() == loggedInID) {
+
+                dataBase.get(loggedInID-1).add(new Account(newAccount));
+            }
+        }
     }
 }
