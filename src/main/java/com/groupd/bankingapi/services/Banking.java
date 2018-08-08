@@ -106,6 +106,13 @@ public class Banking {
         return adminLoggedIn;
     }
     
+    public void logout() {
+        
+        adminLoggedIn = false;
+        userLoggedIn = false;
+        selectedAccount = null;
+    }
+    
     public String displayAccounts() {
         
         String accounts = "";
@@ -176,15 +183,76 @@ public class Banking {
         return selectedAccount.getBalance();
     }
     
-    public void lodgeAmount(int amount) {
+    public boolean lodgeAmount(String input) {
         
-        int currentBalance = selectedAccount.getBalance();
-        selectedAccount.setBalance(currentBalance+amount);
+        int lodgeAmount = 0;
+        String amount = input.substring(1, input.length()-1);
+            
+        try {
+
+            lodgeAmount = Integer.parseInt(amount);
+            int currentBalance = selectedAccount.getBalance();
+            selectedAccount.setBalance(currentBalance+lodgeAmount);
+            return true;
+        }
+        catch (NumberFormatException e) {
+
+            System.out.println("Cannot convert lodge amount!");
+        }
+        
+        return false;
     }
     
-    public void withdrawAmount(int amount) {
+    public boolean withdrawAmount(String input) {
         
-        int currentBalance = selectedAccount.getBalance();
-        selectedAccount.setBalance(currentBalance-amount);
+        int withdrawAmount = 0;
+        String amount = input.substring(1, input.length()-1);
+        
+        try {
+
+            withdrawAmount = Integer.parseInt(amount);
+            int currentBalance = selectedAccount.getBalance();
+            selectedAccount.setBalance(currentBalance-withdrawAmount);
+            return true;
+        }
+        catch (NumberFormatException e) {
+
+            System.out.println("Cannot convert withdraw amount!");
+        }
+        
+        return false;
+    }
+    
+    public boolean transferAmount(String transfer) {
+        
+        int transferAmount = 0;
+        String[] input = transfer.split(",");
+        String accountNo = input[0].substring(1);
+        String amountString = input[1].substring(0, input[1].length() - 1);
+        
+        try {
+            
+            transferAmount = Integer.parseInt(amountString);
+            
+            for(ArrayList<Object> databaseRows : dataBase) {
+            
+                for(int i = 1; i < databaseRows.size(); i++) {
+
+                    if(((Account)databaseRows.get(i)).getAccountNumber().equals(accountNo)) {
+
+                        selectedAccount.setBalance(selectedAccount.getBalance()-transferAmount);
+                        int oldBalance = ((Account)databaseRows.get(i)).getBalance();
+                        ((Account)databaseRows.get(i)).setBalance(oldBalance + transferAmount);
+                        return true;
+                    }
+                }
+            }
+        }
+        catch (NumberFormatException e) {
+
+            System.out.println("Cannot convert transfer amount!");
+        }
+        
+        return false;
     }
 }

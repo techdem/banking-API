@@ -31,9 +31,6 @@ public class Bank {
     
     Banking myBanking = new Banking();
     
-    boolean adminLoggedIn;
-    boolean userLoggedIn;
-    
     // Path for testing that the server is working as expected
     @GET
     @Path("/test")
@@ -46,13 +43,6 @@ public class Bank {
     @Path("/")
     public Response bankAPI() {
         return Response.status(200).entity("Welcome to the Bank API!").build();
-    }
-    
-    // Path for testing that the server is accepting POST methods
-    @POST
-    @Path("/")
-    public String testPost(String input) {
-	return "Echo post: " + input;
     }
     
     // Alert the user if an invalid path has been given for the API
@@ -139,6 +129,14 @@ public class Bank {
     }
     
     @GET
+    @Path("/user/logout")
+    public Response logoutPage() {
+        
+        myBanking.logout();
+        return Response.status(200).entity("Logout successful!").build();
+    }
+    
+    @GET
     @Path("/user")
     public Response displayUser() {
         
@@ -208,29 +206,34 @@ public class Bank {
         }
         else {
             
-            String amount = input.substring(1, input.length()-1);
-            int lodgeAmount = 0;
-            
-            try {
+            if(myBanking.lodgeAmount(input)) {
                 
-                lodgeAmount = Integer.parseInt(amount);
+                return "Amount lodged!";
             }
-            
-            catch (NumberFormatException e) {
-                
-                return "Invalid lodgement amount...";
-            }
-            
-            myBanking.lodgeAmount(lodgeAmount);
-            return "Lodged " + amount;
         }
+        
+        return "Invalid input!";
     }
     
     @POST
     @Path("/user/account/transfer")
-    public String transferAmount(@QueryParam("account") int account,
-            @QueryParam("amount") int amount) {
-        return "Transferring " + amount + " into account " + account;
+    public String transferAmount(String input) {
+        
+        if(!myBanking.userLoggedIn()) {
+            return "Please login first!";
+        }
+        if(!myBanking.accountSelected()) {
+            return "Please select an account first";
+        }
+        else {
+            
+            if(myBanking.transferAmount(input)) {
+                
+                return "Amount transfered!";
+            }
+        }
+        
+        return "Invalid input!";
     }
     
     @POST
@@ -245,21 +248,12 @@ public class Bank {
         }
         else {
             
-            String amount = input.substring(1, input.length()-1);
-            int withdrawAmount = 0;
-            
-            try {
+            if(myBanking.withdrawAmount(input)) {
                 
-                withdrawAmount = Integer.parseInt(amount);
+                return "Amount withdrew!";
             }
-            
-            catch (NumberFormatException e) {
-                
-                return "Invalid lodgement amount...";
-            }
-            
-            myBanking.withdrawAmount(withdrawAmount);
-            return "Withdrew " + amount;
         }
+        
+        return "Invalid input!";
     }
 }
