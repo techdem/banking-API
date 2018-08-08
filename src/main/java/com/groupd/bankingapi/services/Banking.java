@@ -19,7 +19,7 @@ public class Banking {
     private static boolean adminLoggedIn;
     private static boolean userLoggedIn;
     private static int loggedInID;
-    private static String selectedAccount;
+    private static Account selectedAccount;
     
     static {
         myBank = new Bank("10-20-30","Safest Bank","100 Safe Road");
@@ -74,7 +74,7 @@ public class Banking {
         
         adminLoggedIn = false;
         userLoggedIn = false;
-        selectedAccount = "";
+        selectedAccount = null;
         
         for(ArrayList<Object> databaseRows : dataBase) {
                             
@@ -145,12 +145,46 @@ public class Banking {
 
                     if(((Account)databaseRows.get(i)).getAccountNumber().equals(accountNo)) {
                         
-                        selectedAccount = accountNo;
+                        selectedAccount = (Account)databaseRows.get(i);
                         return true;
                     }
                 }
             }
         }
         return false;
+    }
+    
+    public boolean accountSelected() {
+        
+        if(selectedAccount == null) {
+            
+            return false;
+        }
+        else {
+            
+            return true;
+        }
+    }
+    
+    public String selectedAccount() {
+        
+        return selectedAccount.getAccountNumber();
+    }
+    
+    public int getAccountBalance() {
+        
+        return selectedAccount.getBalance();
+    }
+    
+    public void lodgeAmount(int amount) {
+        
+        int currentBalance = selectedAccount.getBalance();
+        selectedAccount.setBalance(currentBalance+amount);
+    }
+    
+    public void withdrawAmount(int amount) {
+        
+        int currentBalance = selectedAccount.getBalance();
+        selectedAccount.setBalance(currentBalance-amount);
     }
 }

@@ -182,13 +182,48 @@ public class Bank {
     @GET
     @Path("/user/account/balance")
     public Response getBalance() {
-        return Response.status(200).entity("Displaying account balance!").build();
+        
+        if(!myBanking.userLoggedIn()) {
+            return Response.status(200).entity("Please login first!").build();
+        }
+        
+        if(!myBanking.accountSelected()) {
+            return Response.status(200).entity("Please select an account first").build();
+        }
+        else {
+            return Response.status(200).entity("Displaying account balance: " +
+                    myBanking.getAccountBalance() + " for account: " + myBanking.selectedAccount()).build();
+        }
     }
     
     @POST
     @Path("/user/account/lodge")
     public String lodgeAmount(String input) {
-	return "Lodging amount: " + input;
+        
+        if(!myBanking.userLoggedIn()) {
+            return "Please login first!";
+        }
+        if(!myBanking.accountSelected()) {
+            return "Please select an account first";
+        }
+        else {
+            
+            String amount = input.substring(1, input.length()-1);
+            int lodgeAmount = 0;
+            
+            try {
+                
+                lodgeAmount = Integer.parseInt(amount);
+            }
+            
+            catch (NumberFormatException e) {
+                
+                return "Invalid lodgement amount...";
+            }
+            
+            myBanking.lodgeAmount(lodgeAmount);
+            return "Lodged " + amount;
+        }
     }
     
     @POST
@@ -200,7 +235,31 @@ public class Bank {
     
     @POST
     @Path("/user/account/withdraw")
-    public String withdrawAmount(@QueryParam("amount") String input) {
-	return "Withdrawing " + input;
+    public String withdrawAmount(String input) {
+        
+        if(!myBanking.userLoggedIn()) {
+            return "Please login first!";
+        }
+        if(!myBanking.accountSelected()) {
+            return "Please select an account first";
+        }
+        else {
+            
+            String amount = input.substring(1, input.length()-1);
+            int withdrawAmount = 0;
+            
+            try {
+                
+                withdrawAmount = Integer.parseInt(amount);
+            }
+            
+            catch (NumberFormatException e) {
+                
+                return "Invalid lodgement amount...";
+            }
+            
+            myBanking.withdrawAmount(withdrawAmount);
+            return "Withdrew " + amount;
+        }
     }
 }

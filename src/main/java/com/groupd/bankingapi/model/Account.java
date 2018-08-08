@@ -13,6 +13,7 @@ package com.groupd.bankingapi.model;
 public class Account {
     
     private String accountNumber;
+    private int balance;
     
     public Account(String number) {
         this.accountNumber = number;
@@ -20,5 +21,12 @@ public class Account {
     
     public String getAccountNumber() {
         return accountNumber;
+    }
+    
+    public void setBalance(int newBalance) {
+        this.balance = newBalance;
+    }
+    public int getBalance() {
+        return balance;
     }
 }
