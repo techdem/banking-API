@@ -89,19 +89,21 @@ public class Bank {
         }
         else {
             
+            String response = "";
             // Iterate over the database and print user IDs and associated accounts
             for(ArrayList<Object> databaseRows : myBanking.accessDatabase()) {
                 
-                System.out.println("USER: " + ((User)databaseRows.get(0)).getID());
-                System.out.println("\tName: " + ((User)databaseRows.get(0)).getName());
+                response += " USER: " + ((User)databaseRows.get(0)).getID();
+                response += " Name: " + ((User)databaseRows.get(0)).getName();
 
                 for(int i = 1; i < databaseRows.size(); i++) {
 
-                    System.out.println("\tAccounts: " + ((Account)databaseRows.get(i)).getAccountNumber());
+                    response += " Accounts: " +
+                            ((Account)databaseRows.get(i)).getAccountNumber();
                 }
             }
             
-            return Response.status(200).entity("Database is connected!").build();
+            return Response.status(200).entity(response).build();
         }
     }
     
