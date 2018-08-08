@@ -12,14 +12,21 @@ package com.groupd.bankingapi.model;
 
 public class User {
     
+    private int id;
     private String userName;
     private String userAddress;
     private String password;
     
-    public User(String name, String address, String pass) {
+    public User(int id, String name, String address, String pass) {
+        this.id = id;
         this.userName = name;
         this.userAddress = address;
         this.password = pass;
+    }
+    
+    public int getID() {
+        
+        return id;
     }
     
     public String getName() {
